@@ -105,7 +105,6 @@ test<-datos[-corte,]
 
 head(train)
 
-
 head(test)
 
 
