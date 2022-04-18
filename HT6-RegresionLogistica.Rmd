@@ -37,6 +37,7 @@ library(rpart)
 library(corrplot)
 library(dummies)
 library(PerformanceAnalytics)
+library(tictoc)
 ```
 
 ```{r}
@@ -112,14 +113,31 @@ head(test)
 
 #Modelo de regresion logistica
 #CasasCaras
+
+tic("Entrenamiento modelo casas caras")
+startm1 <- Sys.time()
 modelo<-glm(datos1~., data = train[,c(2:10,12)],family = binomial(), maxit=100)
 modelo
+finalm1 <- Sys.time()
+totalTm1 <- finalm1 - startm1
+toc()
 
+
+tic("Entrenamiento modelo casas intermedias")
+startm2 <- Sys.time()
 modelo2<-glm(datos2~., data = train[,c(2:10,13)],family = binomial(), maxit=100)
 modelo2
+finalm2 <- Sys.time()
+totalTm2 <- finalm2 - startm2
+toc()
 
+tic("Entrenamiento modelo casas baratas")
+startm3 <- Sys.time()
 modelo3<-glm(datos3~., data = train[,c(2:10,14)],family = binomial(), maxit=100)
 modelo3
+finalm3 <- Sys.time()
+totalTm3 <- finalm3 - startm3
+toc()
 
 #Graficas
 #Casas Caras
@@ -168,8 +186,14 @@ dat1 <- data.frame(datos[,c("LotFrontage","LotArea","GrLivArea","YearBuilt","Bsm
 chart.Correlation(dat1)
 
 #Eficiencia del algoritmo para clasificar o predecir 
-prediction <- predict(modelo, test)
-prediction
+prediction1 <- predict(modelo, test)
+prediction1
+
+prediction2 <- predict(modelo2, test)
+prediction2
+
+prediction3 <- predict(modelo3, test)
+prediction3
 
 #Matriz de confusión
 library(caret)
@@ -177,6 +201,61 @@ library(caret)
 #cfm <- confusionMatrix(prediction,as.factor(test$datos1))
 #cfm
 ```
+
+
+
+```{r}
+print("Tiempo de entrenamiento modelo casas caras: ")
+totalTm1
+
+print("Tiempo de entrenamiento modelo casas intermedias: ")
+totalTm2
+
+print("Tiempo de entrenamiento modelo casas baratas: ")
+totalTm3
+
+```
+Basado en tiempo de ejecucion el modelo mas eficiante es el modelo de casas baratas tomando un tiempo aprox de 0.073 secs y el mas tardado es el modelo de casas intermedias tomando un tiempo de entrenamiento de 0.095 secs. 
+
+
+
+
+
+```{r}
+summary(modelo)
+summary(modelo2)
+summary(modelo3)
+```
+
+Basado en Akaike Information Criteria (AIC) el modelo 
+
+
+
+```{r}
+anova(modelo)
+anova(modelo2)
+anova(modelo3)
+```
+
+```{r}
+library(broom)
+glance(modelo)
+glance(modelo2)
+glance(modelo3)
+
+```
+
+
+basados en las metricas previamente mostradas el modelo mas eficiente con los datos es el modelo de casas caras y el menos eficiente es de casas baratas, esto se debe a la cantidad de datos positivos con los que cada uno de estos modelos fue entrenado (como se muestra a continuacion). Debido a una menor cantidad de datos de entrenamiento la precision y ajustamiento de los modelos es mayor. 
+
+
+```{r}
+library(dplyr)
+train %>% count(datos1)
+train %>% count(datos2)
+train %>% count(datos3)
+```
+
 
 
 
