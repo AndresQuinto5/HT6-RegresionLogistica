@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 #Librerias que vamos a utilizar para la HT6
 library(dplyr)
+glimpse(mtcars)
 library(tidyr)
 library(rpart)
 library(caret)
@@ -35,6 +36,7 @@ library(factoextra)
 library(rpart)
 library(corrplot)
 library(dummies)
+library(PerformanceAnalytics)
 ```
 
 ```{r}
@@ -158,5 +160,27 @@ ggplot(data = train[,c("GrLivArea","datos3")], aes(x = GrLivArea, y = datos3)) +
   labs(title = "Regresion logistica: Casas Economicas",
        y = "Probabilidad default") +
   theme(legend.position = "none")
+
+#Analisis del modelo
+
+#Correlacion de variables del modelo 
+library(PerformanceAnalytics)
+dat1 <- data.frame(datos[,c("LotFrontage","LotArea","GrLivArea","YearBuilt","BsmtUnfSF","TotalBsmtSF","X1stFlrSF","GarageYrBlt","GarageArea","YearRemodAdd", "SalePrice")])
+chart.Correlation(dat1)
+
+#Eficiencia del algoritmo para clasificar o predecir 
+
+prediction <- predict(modelo, test)
+prediction
+
+#Matriz de confusión
+library(caret)
+
+table(factor(prediction, levels=min(test):max(test)), 
+      factor(test, levels=min(test):max(test)))
+
+#cfm <- confusionMatrix(prediction,as.factor(test$datos1))
+#cfm
 ```
+
 
