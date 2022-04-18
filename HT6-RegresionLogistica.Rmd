@@ -168,18 +168,15 @@ dat1 <- data.frame(datos[,c("LotFrontage","LotArea","GrLivArea","YearBuilt","Bsm
 chart.Correlation(dat1)
 
 #Eficiencia del algoritmo para clasificar o predecir 
-
 prediction <- predict(modelo, test)
 prediction
 
 #Matriz de confusión
 library(caret)
-
-table(factor(prediction, levels=min(test):max(test)), 
-      factor(test, levels=min(test):max(test)))
-
+#table(factor(prediction, levels=min(test):max(test)), factor(test, levels=min(test):max(test)))
 #cfm <- confusionMatrix(prediction,as.factor(test$datos1))
 #cfm
 ```
+
 
 
